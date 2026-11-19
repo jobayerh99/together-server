@@ -29,12 +29,13 @@ const eventCollection = db.collection("event")
 // http://localhost:8000/create-event
 
 app.post("/create-event", async (req, res) => {
-    const data = req.body
-    
+    const data = req.body  
     const result = await eventCollection.insertOne(data)
+    res.send(result)
+})
 
-    console.log(result);
-
+app.get('/upcoming-events', async (req, res) => {
+    const result = await eventCollection.find().toArray()
     res.send(result)
 })
 
