@@ -50,6 +50,12 @@ app.post('/joined', async(req, res) => {
     res.send(result)
 })
 
+app.get('/joined-events/:email', async(req, res) => {
+    const {email} = req.params
+    const result = await joinedCollection.find({email: email}).toArray()
+    res.send(result)
+})
+
 app.get("/", (req, res) => {
     res.send("Hello World from PH..");
 });
