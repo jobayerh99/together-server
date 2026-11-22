@@ -25,10 +25,10 @@ const db = mongoClient.db("together")
 const eventCollection = db.collection("event")
 const joinedCollection = db.collection("joined")
 
-// http://localhost:8000/upcoming-events
+// http://localhost:8000/joined-events/:email
 
 app.post("/create-event", async (req, res) => {
-    const data = req.body  
+    const data = req.body
     const result = await eventCollection.insertOne(data)
     res.send(result)
 })
@@ -38,21 +38,27 @@ app.get('/upcoming-events', async (req, res) => {
     res.send(result)
 })
 
-app.get('/upcoming-event/:id', async (req, res) =>{
-    const {id} = req.params
-    const result = await eventCollection.findOne({_id: new ObjectId(id)})
+app.get('/upcoming-event/:id', async (req, res) => {
+    const { id } = req.params
+    const result = await eventCollection.findOne({ _id: new ObjectId(id) })
     res.send(result)
 })
 
-app.post('/joined', async(req, res) => {
+app.post('/joined', async (req, res) => {
     const data = req.body
     const result = await joinedCollection.insertOne(data)
     res.send(result)
 })
 
-app.get('/joined-events/:email', async(req, res) => {
-    const {email} = req.params
-    const result = await joinedCollection.find({email: email}).toArray()
+app.get('/joined-events/:email', async (req, res) => {
+    const { email } = req.params
+    const result = await joinedCollection.find({ email: email }).toArray()
+    res.send(result)
+})
+
+app.delete('/joinedevents/:id', async (req, res) => {
+    const { id } = req.params
+    const result = await joinedCollection.deleteOne({_id: new ObjectId (id)})
     res.send(result)
 })
 
