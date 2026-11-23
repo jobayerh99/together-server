@@ -25,7 +25,7 @@ const db = mongoClient.db("together")
 const eventCollection = db.collection("event")
 const joinedCollection = db.collection("joined")
 
-// http://localhost:8000/joined-events/:email
+// http://localhost:8000/event/:id
 
 app.post("/create-event", async (req, res) => {
     const data = req.body
@@ -58,8 +58,30 @@ app.get('/joined-events/:email', async (req, res) => {
 
 app.delete('/joinedevents/:id', async (req, res) => {
     const { id } = req.params
-    const result = await joinedCollection.deleteOne({_id: new ObjectId (id)})
+    const result = await joinedCollection.deleteOne({ _id: new ObjectId(id) })
     res.send(result)
+})
+
+app.get('/manage-events/:email', async (req, res) => {
+    const { email } = req.params
+    const result = await eventCollection.find({ userEmail: email }).toArray()
+    res.send(result)
+})
+
+app.patch('/event/:id', async (req, res) => {
+    const { id } = req.params
+    const updatedData = req.body
+    const result = await eventCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: updatedData }
+    )
+    res.status(200).json(result)
+})
+
+app.delete('/event/:id', async (req, res) => {
+    const {id} = req.params
+    const result = await eventCollection.deleteOne({_id: new ObjectId(id)})
+    res.json(result)
 })
 
 app.get("/", (req, res) => {
